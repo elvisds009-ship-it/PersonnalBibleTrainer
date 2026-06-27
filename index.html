@@ -8,82 +8,90 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f5f5f7;
-  color: #1d1d1f;
-}
-
-/* HEADER */
-.header {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  background: white;
-  font-weight: 600;
-  font-size: 18px;
+  background: #f6f6f7;
+  color: #1c1c1e;
 }
 
 /* CONTAINER */
 .container {
-  padding: 20px;
-  max-width: 500px;
+  max-width: 420px;
   margin: auto;
+  padding: 30px 20px;
+  text-align: center;
 }
 
-/* CARDS */
+/* TITLE */
+h1 {
+  font-size: 26px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #6e6e73;
+  margin-bottom: 25px;
+}
+
+/* CARD */
 .card {
   background: white;
-  border-radius: 16px;
-  padding: 15px;
-  margin-top: 15px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-/* PLAN CHOIX */
+/* PLAN */
 .plan {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 15px;
+  text-align: left;
+  padding: 18px;
   border-radius: 14px;
-  margin-top: 10px;
-  border: 2px solid transparent;
+  margin: 10px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.plan:hover {
+  background: #f2f2f7;
 }
 
 .plan.active {
-  border: 2px solid #4f46e5;
+  background: #eef0ff;
+  border: 2px solid #5b5cff;
 }
 
 .plan-title {
   font-weight: 600;
+  font-size: 16px;
 }
 
 .plan-desc {
+  color: #6e6e73;
   font-size: 14px;
-  color: gray;
+  margin-top: 4px;
 }
 
 /* BUTTON */
 button {
   width: 100%;
-  margin-top: 20px;
-  padding: 14px;
+  margin-top: 25px;
+  padding: 15px;
   border: none;
-  border-radius: 12px;
-  background: #4f46e5;
-  color: white;
+  border-radius: 14px;
   font-size: 16px;
+  color: white;
+  cursor: pointer;
+
+  background: linear-gradient(90deg, #5b5cff, #6c63ff);
 }
 
-/* CHAPTER */
+/* TODAY PAGE */
 .chapter {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   padding: 15px;
   margin-top: 10px;
+  background: white;
   border-radius: 14px;
-  border: 1px solid #ddd;
+  border: 1px solid #e5e5ea;
 }
 
 .chapter.done {
@@ -93,15 +101,15 @@ button {
 /* PROGRESS */
 .progress-bar {
   height: 8px;
-  background: #ddd;
+  background: #e5e5ea;
   border-radius: 10px;
   overflow: hidden;
-  margin-top: 10px;
+  margin: 20px 0;
 }
 
 .progress-fill {
   height: 100%;
-  background: #4f46e5;
+  background: #5b5cff;
   width: 0%;
 }
 
@@ -117,11 +125,6 @@ button {
   border-top: 1px solid #ddd;
 }
 
-.nav div {
-  font-size: 12px;
-  text-align: center;
-}
-
 .hidden {
   display: none;
 }
@@ -130,42 +133,32 @@ button {
 
 <body>
 
-<div class="header">📖 Ma Bible</div>
-
 <div class="container">
 
-<!-- PAGE CHOIX -->
-<div id="pageSelect">
-  <h2>Bienvenue</h2>
-  <p>Choisis ton rythme</p>
+<!-- PAGE SELECT -->
+<div id="selectPage">
+  <h1>Bienvenue</h1>
+  <div class="subtitle">Choisis ton rythme</div>
 
   <div class="card">
     <div class="plan" onclick="selectPlan('1', this)">
-      <div>
-        <div class="plan-title">1 an</div>
-        <div class="plan-desc">~3-4 chapitres / jour</div>
-      </div>
+      <div class="plan-title">1 an</div>
+      <div class="plan-desc">~3-4 chapitres / jour</div>
     </div>
 
     <div class="plan" onclick="selectPlan('2', this)">
-      <div>
-        <div class="plan-title">2 ans</div>
-        <div class="plan-desc">~1-2 chapitres / jour</div>
-      </div>
+      <div class="plan-title">2 ans</div>
+      <div class="plan-desc">~1-2 chapitres / jour</div>
     </div>
 
     <div class="plan" onclick="selectPlan('3', this)">
-      <div>
-        <div class="plan-title">3 ans</div>
-        <div class="plan-desc">~1 chapitre / jour</div>
-      </div>
+      <div class="plan-title">3 ans</div>
+      <div class="plan-desc">~1 chapitre / jour</div>
     </div>
 
     <div class="plan" onclick="selectPlan('random', this)">
-      <div>
-        <div class="plan-title">Aléatoire</div>
-        <div class="plan-desc">Lecture libre</div>
-      </div>
+      <div class="plan-title">Aléatoire</div>
+      <div class="plan-desc">Lecture libre</div>
     </div>
   </div>
 
@@ -173,15 +166,13 @@ button {
 </div>
 
 <!-- PAGE TODAY -->
-<div id="pageToday" class="hidden">
-  <div class="card">
-    <div>Progression</div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
+<div id="todayPage" class="hidden">
+  <h1>Aujourd'hui</h1>
+
+  <div class="progress-bar">
+    <div id="progressFill" class="progress-fill"></div>
   </div>
 
-  <h2>Aujourd'hui</h2>
   <div id="chapters"></div>
 </div>
 
@@ -189,20 +180,15 @@ button {
 
 <!-- NAV -->
 <div class="nav">
-  <div onclick="showPage('today')">📖<br>Aujourd'hui</div>
-  <div onclick="showPage('select')">⚙️<br>Plan</div>
+  <div onclick="showPage('today')">📖</div>
+  <div onclick="showPage('select')">⚙️</div>
 </div>
 
 <script>
 const bible = [
   {name:"Genèse",chapters:50},
   {name:"Exode",chapters:40},
-  {name:"Lévitique",chapters:27},
-  {name:"Nombres",chapters:36},
-  {name:"Deutéronome",chapters:34},
   {name:"Matthieu",chapters:28},
-  {name:"Marc",chapters:16},
-  {name:"Luc",chapters:24},
   {name:"Jean",chapters:21}
 ];
 
@@ -239,9 +225,9 @@ function start(){
   generate();
 }
 
-function showPage(page){
-  document.getElementById("pageSelect").classList.toggle("hidden", page==="today");
-  document.getElementById("pageToday").classList.toggle("hidden", page!=="today");
+function showPage(p){
+  document.getElementById("selectPage").classList.toggle("hidden", p==="today");
+  document.getElementById("todayPage").classList.toggle("hidden", p!=="today");
 }
 
 function getToday(){
@@ -255,10 +241,10 @@ function generate(){
   let today = getToday();
   if(!state.checked[today]) state.checked[today]=[];
 
-  let chaptersPerDay = 2;
-  if(state.plan==="1") chaptersPerDay = 4;
-  if(state.plan==="2") chaptersPerDay = 2;
-  if(state.plan==="3") chaptersPerDay = 1;
+  let perDay = 2;
+  if(state.plan==="1") perDay = 4;
+  if(state.plan==="2") perDay = 2;
+  if(state.plan==="3") perDay = 1;
 
   let list = [];
 
@@ -267,7 +253,7 @@ function generate(){
       list.push(fullList[Math.floor(Math.random()*fullList.length)]);
     }
   } else {
-    list = fullList.slice(state.index, state.index+chaptersPerDay);
+    list = fullList.slice(state.index, state.index+perDay);
   }
 
   list.forEach(ch=>{
@@ -293,7 +279,7 @@ function toggle(ch){
     state.checked[today].push(ch);
   }
 
-  let allChecked = [...document.querySelectorAll(".chapter input")]
+  let allChecked = [...document.querySelectorAll("input")]
     .every(i=>i.checked);
 
   if(allChecked && state.plan!=="random"){
@@ -313,181 +299,9 @@ function save(){
   localStorage.setItem("state", JSON.stringify(state));
 }
 
-// auto reload
 if(state.plan){
   showPage("today");
   generate();
-}
-</script>
-
-</body>
-</html>  margin-top: 10px;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
-}
-
-button {
-  background: #6C63FF;
-  color: white;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-button:hover {
-  background: #574fd6;
-}
-
-.chapter {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px;
-  margin-top: 10px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 12px;
-}
-
-.progress {
-  margin-top: 15px;
-  font-size: 14px;
-  opacity: 0.8;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-  <h1>📖 Bible Trainer</h1>
-
-  <div class="card">
-    <select id="plan">
-      <option value="1">Plan 1 an</option>
-      <option value="2">Plan 2 ans</option>
-      <option value="3">Plan 3 ans</option>
-    </select>
-
-    <button onclick="startPlan()">Commencer</button>
-
-    <h3>Lecture du jour</h3>
-    <div id="chapters"></div>
-
-    <div class="progress" id="progressText"></div>
-  </div>
-</div>
-
-<script>
-// Structure simplifiée de la Bible (ordre réel)
-const bible = [
-  {name: "Genèse", chapters: 50},
-  {name: "Exode", chapters: 40},
-  {name: "Lévitique", chapters: 27},
-  {name: "Nombres", chapters: 36},
-  {name: "Deutéronome", chapters: 34},
-  {name: "Josué", chapters: 24},
-  {name: "Juges", chapters: 21},
-  {name: "Ruth", chapters: 4},
-  {name: "1 Samuel", chapters: 31},
-  {name: "2 Samuel", chapters: 24},
-  {name: "Matthieu", chapters: 28},
-  {name: "Marc", chapters: 16},
-  {name: "Luc", chapters: 24},
-  {name: "Jean", chapters: 21}
-];
-
-// créer liste complète des chapitres
-let fullList = [];
-bible.forEach(book => {
-  for (let i = 1; i <= book.chapters; i++) {
-    fullList.push(`${book.name} ${i}`);
-  }
-});
-
-let state = JSON.parse(localStorage.getItem("bibleState")) || {
-  index: 0,
-  plan: null,
-  checked: {}
-};
-
-function getTodayKey() {
-  return new Date().toISOString().split("T")[0];
-}
-
-function startPlan() {
-  const plan = document.getElementById("plan").value;
-
-  if (state.plan !== plan) {
-    state.index = 0;
-    state.checked = {};
-    state.plan = plan;
-  }
-
-  generateToday();
-}
-
-function generateToday() {
-  const container = document.getElementById("chapters");
-  container.innerHTML = "";
-
-  let chaptersPerDay;
-  if (state.plan === "1") chaptersPerDay = Math.ceil(fullList.length / 365);
-  if (state.plan === "2") chaptersPerDay = Math.ceil(fullList.length / 730);
-  if (state.plan === "3") chaptersPerDay = Math.ceil(fullList.length / 1095);
-
-  let todayKey = getTodayKey();
-  if (!state.checked[todayKey]) state.checked[todayKey] = [];
-
-  let todaysChapters = fullList.slice(state.index, state.index + chaptersPerDay);
-
-  todaysChapters.forEach(chap => {
-    let checked = state.checked[todayKey].includes(chap) ? "checked" : "";
-
-    container.innerHTML += `
-      <div class="chapter">
-        <span>${chap}</span>
-        <input type="checkbox" ${checked} onchange="toggle('${chap}')">
-      </div>
-    `;
-  });
-
-  updateProgress();
-  save();
-}
-
-function toggle(chap) {
-  let todayKey = getTodayKey();
-
-  if (!state.checked[todayKey]) state.checked[todayKey] = [];
-
-  if (state.checked[todayKey].includes(chap)) {
-    state.checked[todayKey] = state.checked[todayKey].filter(c => c !== chap);
-  } else {
-    state.checked[todayKey].push(chap);
-  }
-
-  // si tout est coché → avancer
-  let todaysChapters = document.querySelectorAll(".chapter");
-  let allChecked = [...todaysChapters].every(el =>
-    el.querySelector("input").checked
-  );
-
-  if (allChecked) {
-    let chaptersPerDay = todaysChapters.length;
-    state.index += chaptersPerDay;
-  }
-
-  updateProgress();
-  save();
-}
-
-function updateProgress() {
-  let percent = Math.floor((state.index / fullList.length) * 100);
-  document.getElementById("progressText").innerText =
-    `Progression : ${percent}%`;
-}
-
-function save() {
-  localStorage.setItem("bibleState", JSON.stringify(state));
 }
 </script>
 
