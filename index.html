@@ -2,39 +2,326 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Bible Trainer</title>
+<title>Ma Bible</title>
 
 <style>
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #1e1e2f, #121212);
-  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f5f7;
+  color: #1d1d1f;
 }
 
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+/* CONTAINER */
 .container {
+  padding: 20px;
   max-width: 500px;
   margin: auto;
-  padding: 20px;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
+/* CARDS */
 .card {
-  background: rgba(255,255,255,0.05);
-  border-radius: 20px;
-  padding: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  background: white;
+  border-radius: 16px;
+  padding: 15px;
+  margin-top: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-select, button {
-  width: 100%;
-  padding: 12px;
+/* PLAN CHOIX */
+.plan {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border-radius: 14px;
   margin-top: 10px;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.plan.active {
+  border: 2px solid #4f46e5;
+}
+
+.plan-title {
+  font-weight: 600;
+}
+
+.plan-desc {
+  font-size: 14px;
+  color: gray;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #4f46e5;
+  color: white;
+  font-size: 16px;
+}
+
+/* CHAPTER */
+.chapter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+}
+
+.chapter.done {
+  opacity: 0.5;
+}
+
+/* PROGRESS */
+.progress-bar {
+  height: 8px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4f46e5;
+  width: 0%;
+}
+
+/* NAV */
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 1px solid #ddd;
+}
+
+.nav div {
+  font-size: 12px;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">📖 Ma Bible</div>
+
+<div class="container">
+
+<!-- PAGE CHOIX -->
+<div id="pageSelect">
+  <h2>Bienvenue</h2>
+  <p>Choisis ton rythme</p>
+
+  <div class="card">
+    <div class="plan" onclick="selectPlan('1', this)">
+      <div>
+        <div class="plan-title">1 an</div>
+        <div class="plan-desc">~3-4 chapitres / jour</div>
+      </div>
+    </div>
+
+    <div class="plan" onclick="selectPlan('2', this)">
+      <div>
+        <div class="plan-title">2 ans</div>
+        <div class="plan-desc">~1-2 chapitres / jour</div>
+      </div>
+    </div>
+
+    <div class="plan" onclick="selectPlan('3', this)">
+      <div>
+        <div class="plan-title">3 ans</div>
+        <div class="plan-desc">~1 chapitre / jour</div>
+      </div>
+    </div>
+
+    <div class="plan" onclick="selectPlan('random', this)">
+      <div>
+        <div class="plan-title">Aléatoire</div>
+        <div class="plan-desc">Lecture libre</div>
+      </div>
+    </div>
+  </div>
+
+  <button onclick="start()">Commencer</button>
+</div>
+
+<!-- PAGE TODAY -->
+<div id="pageToday" class="hidden">
+  <div class="card">
+    <div>Progression</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <h2>Aujourd'hui</h2>
+  <div id="chapters"></div>
+</div>
+
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <div onclick="showPage('today')">📖<br>Aujourd'hui</div>
+  <div onclick="showPage('select')">⚙️<br>Plan</div>
+</div>
+
+<script>
+const bible = [
+  {name:"Genèse",chapters:50},
+  {name:"Exode",chapters:40},
+  {name:"Lévitique",chapters:27},
+  {name:"Nombres",chapters:36},
+  {name:"Deutéronome",chapters:34},
+  {name:"Matthieu",chapters:28},
+  {name:"Marc",chapters:16},
+  {name:"Luc",chapters:24},
+  {name:"Jean",chapters:21}
+];
+
+let fullList = [];
+bible.forEach(b=>{
+  for(let i=1;i<=b.chapters;i++){
+    fullList.push(`${b.name} ${i}`);
+  }
+});
+
+let state = JSON.parse(localStorage.getItem("state")) || {
+  plan:null,
+  index:0,
+  checked:{}
+};
+
+let selectedPlan = null;
+
+function selectPlan(plan, el){
+  selectedPlan = plan;
+  document.querySelectorAll(".plan").forEach(p=>p.classList.remove("active"));
+  el.classList.add("active");
+}
+
+function start(){
+  if(!selectedPlan) return alert("Choisis un plan");
+
+  state.plan = selectedPlan;
+  state.index = 0;
+  state.checked = {};
+  save();
+
+  showPage("today");
+  generate();
+}
+
+function showPage(page){
+  document.getElementById("pageSelect").classList.toggle("hidden", page==="today");
+  document.getElementById("pageToday").classList.toggle("hidden", page!=="today");
+}
+
+function getToday(){
+  return new Date().toISOString().split("T")[0];
+}
+
+function generate(){
+  let container = document.getElementById("chapters");
+  container.innerHTML = "";
+
+  let today = getToday();
+  if(!state.checked[today]) state.checked[today]=[];
+
+  let chaptersPerDay = 2;
+  if(state.plan==="1") chaptersPerDay = 4;
+  if(state.plan==="2") chaptersPerDay = 2;
+  if(state.plan==="3") chaptersPerDay = 1;
+
+  let list = [];
+
+  if(state.plan==="random"){
+    for(let i=0;i<3;i++){
+      list.push(fullList[Math.floor(Math.random()*fullList.length)]);
+    }
+  } else {
+    list = fullList.slice(state.index, state.index+chaptersPerDay);
+  }
+
+  list.forEach(ch=>{
+    let done = state.checked[today].includes(ch);
+
+    container.innerHTML += `
+      <div class="chapter ${done?'done':''}">
+        <span>${ch}</span>
+        <input type="checkbox" ${done?'checked':''} onchange="toggle('${ch}')">
+      </div>
+    `;
+  });
+
+  updateProgress();
+}
+
+function toggle(ch){
+  let today = getToday();
+
+  if(state.checked[today].includes(ch)){
+    state.checked[today]=state.checked[today].filter(x=>x!==ch);
+  } else {
+    state.checked[today].push(ch);
+  }
+
+  let allChecked = [...document.querySelectorAll(".chapter input")]
+    .every(i=>i.checked);
+
+  if(allChecked && state.plan!=="random"){
+    state.index += document.querySelectorAll(".chapter").length;
+  }
+
+  save();
+  generate();
+}
+
+function updateProgress(){
+  let percent = Math.floor((state.index/fullList.length)*100);
+  document.getElementById("progressFill").style.width = percent+"%";
+}
+
+function save(){
+  localStorage.setItem("state", JSON.stringify(state));
+}
+
+// auto reload
+if(state.plan){
+  showPage("today");
+  generate();
+}
+</script>
+
+</body>
+</html>  margin-top: 10px;
   border-radius: 10px;
   border: none;
   font-size: 16px;
